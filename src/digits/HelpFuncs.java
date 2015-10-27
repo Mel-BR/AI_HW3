@@ -1,4 +1,4 @@
-package Numbers;
+package digits;
 
 public class HelpFuncs {
 	public int [][] parseInt(String text, int loc){
