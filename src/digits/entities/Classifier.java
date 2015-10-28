@@ -12,13 +12,16 @@ public class Classifier {
 	private int imageSize;
 	private int nbOfClass;
 	
-	public Classifier(int imageSize, int nbOfClass, int numberOfValues, int totalNumberOfObservations, ArrayList<TrainObservation> trainList, ArrayList<TestObservation> testList ){
+	public Classifier(int imageSize, int nbOfClass, int numberOfValues, int totalNumberOfObservations){
 		this.countClass = new int[nbOfClass];
 		this.countPixValueClass = new int[imageSize][imageSize][numberOfValues][nbOfClass];
 		this.totalNumberOfObservations = totalNumberOfObservations;
 		this.trainList = trainList;
 		this.testList = testList;
 		this.imageSize = imageSize;
+	}
+	
+	public void train(ArrayList<TrainObservation> trainList){
 		
 		for(TrainObservation trainObs : trainList){
 			int label = trainObs.getRealLabel();
@@ -32,39 +35,46 @@ public class Classifier {
 					countPixValueClass[i][j][value][label]++;
 				}
 			}
-		}
-		
+		}	
 	}
 	
-	public float getPriorProb(int label){
+	private float getPriorProb(int label){
 		return (float)countClass[label]/totalNumberOfObservations;
 	}
 	
-	public float getLikelihood(int i,int j, int value,int label){
+	private float getLikelihood(int i,int j, int value,int label){
 		return (float)countPixValueClass[i][j][value][label]/countClass[label];
 	}
 	
-	public double getPosteriorProb(int label, Observation obs){
+	private double getPosteriorProb(int label, Observation obs){
 		double result = Math.log(getPriorProb(label));
 		for(int i = 0 ; i < imageSize ; i++){
 			for(int j = 0 ; j < imageSize ; j++){
-				result += Math.log(getPosteriorProb(label, obs));
+				int value = obs.getFeature(i, j);
+				result += Math.log(getLikelihood(i, j, value, label));
 			}
 		}
 		return result;
 	}
 
 	
-	public int getBestClass(TrainObservation trainObs){
+	public int getBestClass(TestObservation testObs){
 		int result = 0;
 		double bestPosteriorProb = Double.NEGATIVE_INFINITY;
 		for (int i = 0 ; i < nbOfClass ; i++){
-			double posterioProb = getPosteriorProb(i, trainObs);
+			double posterioProb = getPosteriorProb(i, testObs);
 			if( posterioProb < bestPosteriorProb){
 				result = i;
 				bestPosteriorProb = posterioProb;
 			}
 		}
 		return result;
+	}
+	
+	public ArrayList<TestObservation> test(ArrayList<TestObservation> testList){
+		for (TestObservation testObs : testList){
+			testObs.setPredictedLabel(getBestClass(testObs));
+		}
+		return testList;
 	}
 }
