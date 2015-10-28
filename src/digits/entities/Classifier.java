@@ -6,10 +6,11 @@ public class Classifier {
 	
 	private int[] countClass; // number of example for a given class in the training set. 
 	private int[][][][] countPixValueClass; // number of times pixel (i,j) has value f in training examples for a given class	
-	private int totalNumberOfObservations;
-	private int imageSize;
-	private int nbOfClass;
+	private int totalNumberOfObservations; // total number of observations
+	private int imageSize; // size of the image, in our example : 28
+	private int nbOfClass; // total number of class in the problem
 	
+	/* Constructor */
 	public Classifier(int imageSize, int nbOfClass, int numberOfValues, int totalNumberOfObservations){
 		this.countClass = new int[nbOfClass];
 		this.countPixValueClass = new int[imageSize][imageSize][numberOfValues][nbOfClass];
@@ -17,7 +18,13 @@ public class Classifier {
 		this.imageSize = imageSize;
 	}
 	
-	public void train(ArrayList<TrainObservation> trainList){
+	/* Train the classifier, takes as input the training observations and compute the different parameters of our model */
+	public void train(int imageSize, int nbOfClass, int numberOfValues, int totalNumberOfObservations, ArrayList<TrainObservation> trainList){
+		
+		this.countClass = new int[nbOfClass];
+		this.countPixValueClass = new int[imageSize][imageSize][numberOfValues][nbOfClass];
+		this.totalNumberOfObservations = totalNumberOfObservations;
+		this.imageSize = imageSize;
 		
 		for(TrainObservation trainObs : trainList){
 			int label = trainObs.getRealLabel();
@@ -34,14 +41,17 @@ public class Classifier {
 		}	
 	}
 	
+	/* Gives the prior probability given a class */
 	private float getPriorProb(int label){
 		return (float)countClass[label]/totalNumberOfObservations;
 	}
 	
+	/* Gives the likelihood for a given feature (i,j) , a value and a class */
 	private float getLikelihood(int i,int j, int value,int label){
 		return (float)countPixValueClass[i][j][value][label]/countClass[label];
 	}
 	
+	/* Gives the posterior prob for a given observation and a given class */
 	private double getPosteriorProb(int label, Observation obs){
 		double result = Math.log(getPriorProb(label));
 		for(int i = 0 ; i < imageSize ; i++){
@@ -53,7 +63,7 @@ public class Classifier {
 		return result;
 	}
 
-	
+	/* Gives the best class given an observation */
 	public int getBestClass(TestObservation testObs){
 		int result = 0;
 		double bestPosteriorProb = Double.NEGATIVE_INFINITY;
@@ -67,6 +77,8 @@ public class Classifier {
 		return result;
 	}
 	
+	/* Run the tests on a given list of test observations and assign them
+	 *  the best predicted class accord to the model */
 	public ArrayList<TestObservation> test(ArrayList<TestObservation> testList){
 		for (TestObservation testObs : testList){
 			testObs.setPredictedLabel(getBestClass(testObs));
