@@ -7,8 +7,6 @@ public class Classifier {
 	private int[] countClass; // number of example for a given class in the training set. 
 	private int[][][][] countPixValueClass; // number of times pixel (i,j) has value f in training examples for a given class	
 	private int totalNumberOfObservations;
-	private ArrayList<TrainObservation> trainList;
-	private ArrayList<TestObservation> testList;
 	private int imageSize;
 	private int nbOfClass;
 	
@@ -16,8 +14,6 @@ public class Classifier {
 		this.countClass = new int[nbOfClass];
 		this.countPixValueClass = new int[imageSize][imageSize][numberOfValues][nbOfClass];
 		this.totalNumberOfObservations = totalNumberOfObservations;
-		this.trainList = trainList;
-		this.testList = testList;
 		this.imageSize = imageSize;
 	}
 	
