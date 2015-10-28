@@ -1,4 +1,4 @@
-package entities;
+package digits.entities;
 
 public class TestObservation extends Observation{
 	

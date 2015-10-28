@@ -1,4 +1,4 @@
-package entities;
+package digits.entities;
 
 abstract public class Observation {
 	
