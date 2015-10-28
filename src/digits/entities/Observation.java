@@ -14,7 +14,7 @@ abstract public class Observation {
 		this.features = features;
 	}
 	
-	public int getFeatures(int i, int j){
+	public int getFeature(int i, int j){
 		return features[i][j];
 	}
 	
