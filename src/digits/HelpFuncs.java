@@ -25,8 +25,11 @@ public class HelpFuncs {
 		ArrayList<int[][]> ret = new ArrayList<int[][]>();
 		int [][] blank = new int[28][28];
 		int[][] in;
-		for(int i = 0; (isEmpty((in=parseDigit(text, i)))); i++)
+		for(int i = 0; !(isEmpty((in=parseDigit(text, i)))); i++){
 			ret.add(in);
+			System.out.println("At char: " + i);
+		}
+		System.out.println("Done!");
 		return ret;
 	}
 
