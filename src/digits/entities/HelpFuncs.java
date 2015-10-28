@@ -11,16 +11,17 @@ import java.util.Scanner;
 
 public class HelpFuncs {
 
-	public static void main(String arg[]){
-		ArrayList<TrainObservation> observation = buildTrainObs();
-//		for (int i = 0; i < var.length; i++){
-//			for (int j = 0; j < var[0].length; j++){
-//				System.out.print(var[i][j]);
-//			}
-//			System.out.println();
-//		}
-	}
+//	public static void main(String arg[]){
+//		ArrayList<TrainObservation> observation = buildTrainObs();
+////		for (int i = 0; i < var.length; i++){
+////			for (int j = 0; j < var[0].length; j++){
+////				System.out.print(var[i][j]);
+////			}
+////			System.out.println();
+////		}
+//	}
 
+	// Build for TrainObservation
 	public static ArrayList<TrainObservation> buildTrainObs(){
 		ArrayList<TrainObservation> ret = new ArrayList<TrainObservation>();
 		ArrayList<int[][]> dig = parseDigits("trainingimages");
@@ -28,11 +29,12 @@ public class HelpFuncs {
 		
 		for (int i = 0; i < dig.size() && i < lab.size(); i++){
 			ret.add(new TrainObservation(dig.get(i), lab.get(i)));
-			System.out.println("done");
+			//System.out.println("i: "+i + " val: " +lab.get(i));
 		}
 		return ret;
 	}
 	
+	// Parses all digits in file: 'text'
 	public static ArrayList<int[][]> parseDigits(String text){
 		ArrayList<int[][]> ret = new ArrayList<int[][]>();
 		int [][] blank = new int[28][28];
@@ -45,6 +47,7 @@ public class HelpFuncs {
 		return ret;
 	}
 
+	// Parses all labels in a file: 'text'
 	public static ArrayList<Integer> parseLabels(String text){
 		ArrayList<Integer> ret = new ArrayList<Integer>();
 		int var = 0;
@@ -52,6 +55,7 @@ public class HelpFuncs {
 			ret.add(var);
 		return ret;
 	}
+	
 	// Get the 28x28 array of the number at loc in the file text
 	// 0 is blank, 1 is '+' or '#'
 	public static int [][] parseDigit(String text, int loc){
@@ -89,6 +93,7 @@ public class HelpFuncs {
 		return ret;
 	}
 
+	// Get the label in file 'text' at location
 	public static int parseLabel(String text, int loc){
 		URL res = HelpFuncs.class.getResource("/digits/inputs/"+text);
 		FileReader input;
@@ -104,9 +109,10 @@ public class HelpFuncs {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return Integer.parseInt(nextLine);
+		return (nextLine==null)?-1:Integer.parseInt(nextLine);
 	}
 	
+	// Checks if an int[][] is all equal to 0
 	private static boolean isEmpty(int[][] in){
 		for (int i = 0; i<in.length; i++){
 			for (int j = 0; j<in[0].length; j++){
