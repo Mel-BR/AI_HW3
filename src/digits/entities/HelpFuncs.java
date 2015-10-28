@@ -1,4 +1,4 @@
-package digits;
+package digits.entities;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class HelpFuncs {
 
 	public static void main(String arg[]){
-		ArrayList<int[][]> out = parseDigits("trainingimages");
+		ArrayList<TrainObservation> observation = buildTrainObs();
 //		for (int i = 0; i < var.length; i++){
 //			for (int j = 0; j < var[0].length; j++){
 //				System.out.print(var[i][j]);
@@ -21,23 +21,35 @@ public class HelpFuncs {
 //		}
 	}
 
+	public static ArrayList<TrainObservation> buildTrainObs(){
+		ArrayList<TrainObservation> ret = new ArrayList<TrainObservation>();
+		ArrayList<int[][]> dig = parseDigits("trainingimages");
+		ArrayList<Integer> lab = parseLabels("traininglabels");
+		
+		for (int i = 0; i < dig.size() && i < lab.size(); i++){
+			ret.add(new TrainObservation(dig.get(i), lab.get(i)));
+			System.out.println("done");
+		}
+		return ret;
+	}
+	
 	public static ArrayList<int[][]> parseDigits(String text){
 		ArrayList<int[][]> ret = new ArrayList<int[][]>();
 		int [][] blank = new int[28][28];
 		int[][] in;
 		for(int i = 0; !(isEmpty((in=parseDigit(text, i)))); i++){
 			ret.add(in);
-			System.out.println("At char: " + i);
+			//System.out.println("At char: " + i);
 		}
-		System.out.println("Done!");
+		//System.out.println("Done!");
 		return ret;
 	}
 
-	public static int[] parseLabels(String text){
-		int[] ret = new int[6000];
+	public static ArrayList<Integer> parseLabels(String text){
+		ArrayList<Integer> ret = new ArrayList<Integer>();
 		int var = 0;
-		for (int i = 0; (var=parseLabel(text, i))==0; i++)
-			ret[i]=var;
+		for (int i = 0; (var=parseLabel(text, i))!=-1; i++)
+			ret.add(var);
 		return ret;
 	}
 	// Get the 28x28 array of the number at loc in the file text
@@ -85,7 +97,7 @@ public class HelpFuncs {
 			input = new FileReader(res.getPath());
 			BufferedReader bufRead = new BufferedReader(input);
 			String myLine = null;
-			for (int i = 0; (nextLine=bufRead.readLine()) != null &&(i < loc * 28); i++) {
+			for (int i = 0; (nextLine=bufRead.readLine()) != null &&(i < loc); i++) {
 			}
 			input.close();
 		} catch (IOException e) {
