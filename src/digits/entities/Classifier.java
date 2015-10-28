@@ -28,7 +28,7 @@ public class Classifier {
 			totalNumberOfObservations++;
 			for(int i = 0 ; i < imageSize ; i++){
 				for(int j = 0 ; j < imageSize ; j++){
-					int value = trainObs.getFeatures(i, j);
+					int value = trainObs.getFeature(i, j);
 					countPixValueClass[i][j][value][label]++;
 				}
 			}
