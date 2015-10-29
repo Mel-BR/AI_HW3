@@ -14,6 +14,7 @@ public class Classifier {
 	
 	/* Constructor */
 	public Classifier(int imageSize, int nbOfClass, int numberOfValues, int totalNumberOfObservations, int k){
+		this.nbOfClass = nbOfClass;
 		this.countClass = new int[nbOfClass];
 		this.countPixValueClass = new int[imageSize][imageSize][numberOfValues][nbOfClass];
 		this.totalNumberOfObservations = totalNumberOfObservations;
@@ -30,7 +31,6 @@ public class Classifier {
 			//increment the count for the given class
 			countClass[label]++;
 			//increment the total number of observation
-			totalNumberOfObservations++;
 			for(int i = 0 ; i < imageSize ; i++){
 				for(int j = 0 ; j < imageSize ; j++){
 					int value = trainObs.getFeature(i, j);
@@ -42,12 +42,12 @@ public class Classifier {
 	
 	/* Gives the prior probability given a class */
 	public float getPriorProb(int label){
-		return ((float)countClass[label]+k)/(totalNumberOfObservations+k*numberOfValues);
+		return (float)countClass[label]/totalNumberOfObservations;
 	}
 	
 	/* Gives the likelihood for a given feature (i,j) , a value and a class */
-	public float getLikelihood(int i,int j, int value,int label){
-		return (float)countPixValueClass[i][j][value][label]/countClass[label];
+	public float getLikelihood(int i,int j, int value,int label){		
+		return ((float)countPixValueClass[i][j][value][label]+k)/(countClass[label]+k*numberOfValues);
 	}
 	
 	/* Gives the posterior prob for a given observation and a given class */
@@ -68,7 +68,7 @@ public class Classifier {
 		double bestPosteriorProb = Double.NEGATIVE_INFINITY;
 		for (int i = 0 ; i < nbOfClass ; i++){
 			double posterioProb = getPosteriorProb(i, testObs);
-			if( posterioProb < bestPosteriorProb){
+			if( posterioProb > bestPosteriorProb){
 				result = i;
 				bestPosteriorProb = posterioProb;
 			}
