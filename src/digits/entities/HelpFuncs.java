@@ -22,10 +22,10 @@ public class HelpFuncs {
 //	}
 
 	// Build for TrainObservation
-	public static ArrayList<TrainObservation> buildTrainObs(){
+	public static ArrayList<TrainObservation> buildTrainObs(String imageFileName, String labelFileName){
 		ArrayList<TrainObservation> ret = new ArrayList<TrainObservation>();
-		ArrayList<int[][]> dig = parseDigits("trainingimages");
-		ArrayList<Integer> lab = parseLabels("traininglabels");
+		ArrayList<int[][]> dig = parseDigits(imageFileName);
+		ArrayList<Integer> lab = parseLabels(labelFileName);
 		
 		for (int i = 0; i < dig.size() && i < lab.size(); i++){
 			ret.add(new TrainObservation(dig.get(i), lab.get(i)));
@@ -35,10 +35,10 @@ public class HelpFuncs {
 	
 	
 	// Build for TrainObservation
-	public static ArrayList<TestObservation> buildTestObs(){
+	public static ArrayList<TestObservation> buildTestObs(String imageFileName, String labelFileName){
 		ArrayList<TestObservation> ret = new ArrayList<TestObservation>();
-		ArrayList<int[][]> dig = parseDigits("testimages");
-		ArrayList<Integer> lab = parseLabels("testlabels");
+		ArrayList<int[][]> dig = parseDigits(imageFileName);
+		ArrayList<Integer> lab = parseLabels(labelFileName);
 		
 		for (int i = 0; i < dig.size() && i < lab.size(); i++){
 			ret.add(new TestObservation(dig.get(i), lab.get(i)));
