@@ -29,10 +29,23 @@ public class HelpFuncs {
 		
 		for (int i = 0; i < dig.size() && i < lab.size(); i++){
 			ret.add(new TrainObservation(dig.get(i), lab.get(i)));
-			//System.out.println("i: "+i + " val: " +lab.get(i));
 		}
 		return ret;
 	}
+	
+	
+	// Build for TrainObservation
+	public static ArrayList<TestObservation> buildTestObs(){
+		ArrayList<TestObservation> ret = new ArrayList<TestObservation>();
+		ArrayList<int[][]> dig = parseDigits("testimages");
+		ArrayList<Integer> lab = parseLabels("testlabels");
+		
+		for (int i = 0; i < dig.size() && i < lab.size(); i++){
+			ret.add(new TestObservation(dig.get(i), lab.get(i)));
+		}
+		return ret;
+	}
+	
 	
 	// Parses all digits in file: 'text'
 	public static ArrayList<int[][]> parseDigits(String text){
