@@ -9,22 +9,21 @@ public class Classifier {
 	private int totalNumberOfObservations; // total number of observations
 	private int imageSize; // size of the image, in our example : 28
 	private int nbOfClass; // total number of class in the problem
+	private int k; // smoothing parameter
+	private int numberOfValues;
 	
 	/* Constructor */
-	public Classifier(int imageSize, int nbOfClass, int numberOfValues, int totalNumberOfObservations){
+	public Classifier(int imageSize, int nbOfClass, int numberOfValues, int totalNumberOfObservations, int k){
 		this.countClass = new int[nbOfClass];
 		this.countPixValueClass = new int[imageSize][imageSize][numberOfValues][nbOfClass];
 		this.totalNumberOfObservations = totalNumberOfObservations;
 		this.imageSize = imageSize;
+		this.numberOfValues = numberOfValues;
+		this.k = k;
 	}
 	
 	/* Train the classifier, takes as input the training observations and compute the different parameters of our model */
-	public void train(int imageSize, int nbOfClass, int numberOfValues, int totalNumberOfObservations, ArrayList<TrainObservation> trainList){
-		
-		this.countClass = new int[nbOfClass];
-		this.countPixValueClass = new int[imageSize][imageSize][numberOfValues][nbOfClass];
-		this.totalNumberOfObservations = totalNumberOfObservations;
-		this.imageSize = imageSize;
+	public void train(ArrayList<TrainObservation> trainList){
 		
 		for(TrainObservation trainObs : trainList){
 			int label = trainObs.getRealLabel();
@@ -42,17 +41,17 @@ public class Classifier {
 	}
 	
 	/* Gives the prior probability given a class */
-	private float getPriorProb(int label){
-		return (float)countClass[label]/totalNumberOfObservations;
+	public float getPriorProb(int label){
+		return ((float)countClass[label]+k)/(totalNumberOfObservations+k*numberOfValues);
 	}
 	
 	/* Gives the likelihood for a given feature (i,j) , a value and a class */
-	private float getLikelihood(int i,int j, int value,int label){
+	public float getLikelihood(int i,int j, int value,int label){
 		return (float)countPixValueClass[i][j][value][label]/countClass[label];
 	}
 	
 	/* Gives the posterior prob for a given observation and a given class */
-	private double getPosteriorProb(int label, Observation obs){
+	public double getPosteriorProb(int label, Observation obs){
 		double result = Math.log(getPriorProb(label));
 		for(int i = 0 ; i < imageSize ; i++){
 			for(int j = 0 ; j < imageSize ; j++){
