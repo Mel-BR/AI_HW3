@@ -37,7 +37,6 @@ public class HelpFuncs {
 	// Parses all digits in file: 'text'
 	public static ArrayList<int[][]> parseDigits(String text){
 		ArrayList<int[][]> ret = new ArrayList<int[][]>();
-		int [][] blank = new int[28][28];
 		int[][] in;
 		for(int i = 0; !(isEmpty((in=parseDigit(text, i)))); i++){
 			ret.add(in);
@@ -67,7 +66,6 @@ public class HelpFuncs {
 		try {
 			input = new FileReader(res.getPath());
 			BufferedReader bufRead = new BufferedReader(input);
-			String myLine = null;
 			for (int i = 0; (nextLine=bufRead.readLine()) != null &&(i < loc * 28); i++) {
 				//System.out.println("+" +nextLine);
 			}
@@ -82,6 +80,7 @@ public class HelpFuncs {
 				}
 
 			}
+			bufRead.close();
 			input.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -101,7 +100,6 @@ public class HelpFuncs {
 		try {
 			input = new FileReader(res.getPath());
 			BufferedReader bufRead = new BufferedReader(input);
-			String myLine = null;
 			for (int i = 0; (nextLine=bufRead.readLine()) != null &&(i < loc); i++) {
 			}
 			input.close();
