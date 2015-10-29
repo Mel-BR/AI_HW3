@@ -5,24 +5,26 @@ import java.util.ArrayList;
 /* This class will help to evaluate our model by
  * using a certain amount of metrics */
 public class Evaluator {
-	
-	private ArrayList<TestObservation> testList;
 
-	/* Constructor */
-	public Evaluator(ArrayList<TestObservation> testList){
-		this.testList = testList;	
-	}
+	private ArrayList<TestObservation> testList;
+	private Classifier classifier;
 	
+	/* Constructor */
+	public Evaluator(ArrayList<TestObservation> testList, Classifier classifier){
+		this.testList = testList;	
+		this.classifier = classifier;
+	}
+
 	/* Sets a new test observations list */
 	public void setTestList(ArrayList<TestObservation> testList){
 		this.testList = testList;	
 	}
-	
+
 	/* Returns the accuracy for a given class */
 	public float getAccuracy(int label){
 		int countRealLabel = 0; // The number of test observations that have the given label as RealLabel
 		int countCorrectedPredictedLabel = 0; // The number of test observations that have the given label as RealLabel AND as PredictedLabel
-		
+
 		// We browse the list of test observation */
 		for(TestObservation testObs : testList){
 			if(testObs.getRealLabel() == label){
@@ -35,4 +37,36 @@ public class Evaluator {
 		return (float)countCorrectedPredictedLabel/countRealLabel;
 	}
 
+	public float[][] generateConfMatrix(ArrayList<TestObservation> obs){
+		float[][] ret = new float [10][10];
+		int[] counter = new int[10];
+		for (TestObservation it : obs){
+			counter[it.getRealLabel()]++;
+			ret[it.getPredictedLabel()][it.getRealLabel()]++;
+		}
+		for (int i=0; i<ret.length; i++){
+			for (int j =0; j< ret[0].length; j++){
+				ret[i][j]/=counter[i];
+			}
+		}
+		return ret;
+	}
+	
+	public float getOddRatio(int i, int j, int ci, int cii){
+		if (i<0 || i>27 || j<0 || j>27 || ci>9 || cii>9){
+			System.out.println("getOddRatio wrong input");
+			return -1;
+		}
+		return (classifier.getLikelihood(i,j,1,ci)/classifier.getLikelihood(i,j,1,cii));
+	}
+	
+	public float[][] getOddRatios(int ci, int cii){
+		float [][] ret = new float[classifier.getSize()][classifier.getSize()];
+		for (int i = 0; i<classifier.getSize(); i++){
+			for (int j = 0; j<classifier.getSize(); j++){
+				ret[i][j] = getOddRatio(i,j,ci,cii);
+			}
+		}
+		return ret;
+	}
 }

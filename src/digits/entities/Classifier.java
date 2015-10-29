@@ -84,4 +84,8 @@ public class Classifier {
 		}
 		return testList;
 	}
+	
+	public int getSize(){
+		return imageSize;
+	}
 }
