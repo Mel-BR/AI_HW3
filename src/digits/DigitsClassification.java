@@ -30,8 +30,16 @@ public class DigitsClassification {
 		
 		Evaluator eval = new Evaluator(testObsListLabeled,classifier);
 		for(int i=0;i<10;i++){
-			System.out.println(eval.getAccuracy(i));
+			System.out.println("Accuracy for label "+i+" : "+eval.getAccuracy(i));
 		}
+		
+		System.out.println();
+		
+		for(int i=0;i<10;i++){
+			System.out.println("Likelihood Map for label "+i+" : ");
+			eval.displayLikelihoodMap(i);
+		}
+		
 		
 		
 		
