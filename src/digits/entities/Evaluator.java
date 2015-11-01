@@ -116,14 +116,14 @@ public class Evaluator {
 		
 	}	
 	
-	public void displayOddRatios(int label, int label2){
-		// TO DO
-		/*for (int i = 0; i<28; i++){
+	public void displayOddRatiosMap(int label1, int label2){
+		for (int i = 0; i<28; i++){
 			for (int j = 0; j<28; j++){
-				if(){
+				double logOddRation = Math.log(getOddRatio(i, j, label1, label2));
+				if(logOddRation < 0 ){
 					System.out.print(" ");
 				}
-				else if(){
+				else if(logOddRation < 1.3){
 					System.out.print("-");
 				}
 				else{
@@ -132,7 +132,7 @@ public class Evaluator {
 				
 			}
 			System.out.println();
-		}*/
+		}
 		
 	}
 }
