@@ -3,6 +3,7 @@ package digits;
 import java.util.ArrayList;
 
 import digits.entities.Classifier;
+import digits.entities.Evaluator;
 import digits.entities.HelpFuncs;
 import digits.entities.TestObservation;
 import digits.entities.TrainObservation;
@@ -26,6 +27,13 @@ public class DigitsClassification {
 		/*for(TestObservation testObs : testObsListLabeled){
 			System.out.println(testObs.getRealLabel()+" "+testObs.getPredictedLabel());
 		}*/
+		
+		Evaluator eval = new Evaluator(testObsListLabeled,classifier);
+		for(int i=0;i<10;i++){
+			System.out.println(eval.getAccuracy(i));
+		}
+		
+		
 		
 		
 	}	
