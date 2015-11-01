@@ -96,4 +96,43 @@ public class Evaluator {
 			return (int) ((in[a[0]][a[1]] - in[b[0]][b[1]])*1000);
 		}
 	}
+	
+	public void displayLikelihoodMap(int label){
+		for (int i = 0; i<28; i++){
+			for (int j = 0; j<28; j++){
+				if(classifier.getLikelihood(i, j, 1, label)<0.1){
+					System.out.print(" ");
+				}
+				else if(classifier.getLikelihood(i, j, 1, label)<0.5){
+					System.out.print("-");
+				}
+				else{
+					System.out.print("+");
+				}
+				
+			}
+			System.out.println();
+		}
+		
+	}	
+	
+	public void displayOddRatios(int label, int label2){
+		// TO DO
+		/*for (int i = 0; i<28; i++){
+			for (int j = 0; j<28; j++){
+				if(){
+					System.out.print(" ");
+				}
+				else if(){
+					System.out.print("-");
+				}
+				else{
+					System.out.print("+");
+				}
+				
+			}
+			System.out.println();
+		}*/
+		
+	}
 }
