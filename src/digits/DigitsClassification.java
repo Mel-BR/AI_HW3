@@ -28,17 +28,26 @@ public class DigitsClassification {
 			System.out.println(testObs.getRealLabel()+" "+testObs.getPredictedLabel());
 		}*/
 		
+		
 		Evaluator eval = new Evaluator(testObsListLabeled,classifier);
+		
+		// Displaying accuracy
 		for(int i=0;i<10;i++){
 			System.out.println("Accuracy for label "+i+" : "+eval.getAccuracy(i));
 		}
 		
 		System.out.println();
 		
+		// Displaying Likelihood maps
 		for(int i=0;i<10;i++){
 			System.out.println("Likelihood Map for label "+i+" : ");
 			eval.displayLikelihoodMap(i);
-		}
+		}		
+		
+		System.out.println();
+		
+		// displaying odd ratios maps : Test
+		eval.displayOddRatiosMap(8, 1);
 		
 		
 		
