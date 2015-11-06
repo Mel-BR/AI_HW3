@@ -28,7 +28,7 @@ public class DigitsClassification {
 			classifier2.train(trainObsList);
 			ArrayList<TestObservation> testObsListLabeled2 = classifier2.test(testObsList);
 			Evaluator eval2 = new Evaluator(testObsListLabeled2,classifier2);
-			System.out.println("General accuracy for k="+i+" : "+eval2.getGeneralAccuracy());
+			System.out.println("General accuracy for k="+i+" : "+eval2.getGeneralAccuracy()*100+"%");
 		}
 		
 		System.out.println();
@@ -44,7 +44,7 @@ public class DigitsClassification {
 		
 		// Displaying accuracy for every number
 		for(int i=0;i<10;i++){
-			System.out.println("Accuracy for label "+i+" : "+eval.getAccuracy(i));
+			System.out.println("Accuracy for label "+i+" : "+eval.getAccuracy(i)*100+"%");
 		}
 		
 		System.out.println();
