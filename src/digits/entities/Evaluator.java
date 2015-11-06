@@ -10,7 +10,7 @@ public class Evaluator {
 
 	private ArrayList<TestObservation> testList;
 	private Classifier classifier;
-	
+
 	/* Constructor */
 	public Evaluator(ArrayList<TestObservation> testList, Classifier classifier){
 		this.testList = testList;	
@@ -38,11 +38,11 @@ public class Evaluator {
 		}
 		return (float)countCorrectedPredictedLabel/countRealLabel;
 	}
-	
+
 	public float getGeneralAccuracy(){
 		int countAll= 0; // The number of test observations
 		int countCorrectedPredictedLabel = 0; // The number of test observations that have the same RealLabel and PredictedLabel
-		
+
 		// We browse the list of test observation */
 		for(TestObservation testObs : testList){
 			countAll++;
@@ -67,7 +67,7 @@ public class Evaluator {
 		}
 		return ret;
 	}
-	
+
 	public float getOddRatio(int i, int j, int ci, int cii){
 		if (i<0 || i>27 || j<0 || j>27 || ci>9 || cii>9){
 			System.out.println("getOddRatio wrong input");
@@ -75,7 +75,7 @@ public class Evaluator {
 		}
 		return (classifier.getLikelihood(i,j,1,ci)/classifier.getLikelihood(i,j,1,cii));
 	}
-	
+
 	public float[][] getOddRatios(int ci, int cii){
 		float [][] ret = new float[classifier.getSize()][classifier.getSize()];
 		for (int i = 0; i<classifier.getSize(); i++){
@@ -85,7 +85,7 @@ public class Evaluator {
 		}
 		return ret;
 	}
-	
+
 	public int[][] getHighestVal(float [][] in, int number){
 		int [][] ret = new int[number][2];
 		Comparator<int[]> comparator = new myComparator(in);
@@ -100,7 +100,7 @@ public class Evaluator {
 		}
 		return ret;
 	}
-	
+
 	public class myComparator implements Comparator<int[]>{
 		float [][]in;
 		public myComparator(float[][]in){
@@ -110,8 +110,8 @@ public class Evaluator {
 			return (int) ((in[a[0]][a[1]] - in[b[0]][b[1]])*1000);
 		}
 	}
-	
-	
+
+
 	/* Returns the pairs with the highest value for the confusion rate
 	 * rows represent the rank and 1st column represent the first value 
 	 * and second column the second one*/
@@ -138,7 +138,7 @@ public class Evaluator {
 		}
 		return ret;
 	}
-	
+
 	public void displayLikelihoodMap(int label){
 		for (int i = 0; i<28; i++){
 			for (int j = 0; j<28; j++){
@@ -151,13 +151,13 @@ public class Evaluator {
 				else{
 					System.out.print("+");
 				}
-				
+
 			}
 			System.out.println();
 		}
-		
+
 	}	
-	
+
 	public void displayOddRatiosMap(int label1, int label2){
 		for (int i = 0; i<28; i++){
 			for (int j = 0; j<28; j++){
@@ -171,10 +171,40 @@ public class Evaluator {
 				else{
 					System.out.print("+");
 				}
-				
+
 			}
 			System.out.println();
 		}
-		
+
 	}
+
+	public void displayLowest(){
+		double min = Double.POSITIVE_INFINITY;
+		TestObservation ret = null;
+		for (int i = 0; i < 10; i++){
+			for (TestObservation it : testList){
+				double here = classifier.getPosteriorProb(i, it);
+				if (here < min){
+					min = here;
+					ret = it;
+				}
+			}
+		}
+		(ret).displayFeatures();
+		}
+	
+	public void displayHighest(){
+		double min = Double.NEGATIVE_INFINITY;
+		TestObservation ret = null;
+		for (int i = 0; i < 10; i++){
+			for (TestObservation it : testList){
+				double here = classifier.getPosteriorProb(i, it);
+				if (here > min){
+					min = here;
+					ret = it;
+				}
+			}
+		}
+		(ret).displayFeatures();
+		}
 }
