@@ -21,8 +21,9 @@ public class DigitsClassification {
 
 		System.out.println("Done");
 
+		DecimalFormat percentFormatter = new DecimalFormat("00.00%");
 		
-		// Displaying general accuracy
+		// Displaying general accuracy for different values of k
 		for(int i=1;i<50;i++){
 			Classifier classifier2 = new Classifier(28, 10, 2, trainObsList.size(), i);
 			classifier2.train(trainObsList);
@@ -33,7 +34,7 @@ public class DigitsClassification {
 		
 		System.out.println();
 		
-		// We choose value 1
+		// We choose value 1 because it gives us the best accuracy 
 		Classifier classifier = new Classifier(28, 10, 2, trainObsList.size(), 1);
 		classifier.train(trainObsList);
 		ArrayList<TestObservation> testObsListLabeled = classifier.test(testObsList);	
@@ -76,15 +77,24 @@ public class DigitsClassification {
 		System.out.println();
 		
 		// Displaying Likelihood maps
-		for(int i=0;i<10;i++){
-			System.out.println("Likelihood Map for label "+i+" : ");
-			eval.displayLikelihoodMap(i);
-		}		
+//		for(int i=0;i<10;i++){
+//			System.out.println("Likelihood Map for label "+i+" : ");
+//			eval.displayLikelihoodMap(i);
+//		}		
 		
 		System.out.println();
 		
 		// displaying odd ratios maps : Test
-		eval.displayOddRatiosMap(8, 1);
+		for (int i = 0; i < highestVal.length; i++){
+			int label1 = highestVal[i][0];
+			int label2 = highestVal[i][1];
+			System.out.println("Pair: " + label1 + "," + label2);
+			System.out.println("Likelihood Map for label "+label1+" : ");
+			eval.displayLikelihoodMap(label1);
+			System.out.println("Likelihood Map for label "+label2+" : ");
+			eval.displayLikelihoodMap(label2);
+			eval.displayOddRatiosMap(label1, label2);
+		}
 		
 		
 		
