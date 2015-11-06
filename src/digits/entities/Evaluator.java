@@ -182,10 +182,12 @@ public class Evaluator {
 		double min = Double.POSITIVE_INFINITY;
 		TestObservation ret = null;
 		for (TestObservation it : testList){
-			double here = classifier.getPosteriorProb(i, it);
-			if (here < min){
-				min = here;
-				ret = it;
+			if(it.getPredictedLabel()==i){
+				double here = classifier.getPosteriorProb(i, it);
+				if (here < min){
+					min = here;
+					ret = it;
+				}
 			}
 		}
 		(ret).displayFeatures();
@@ -195,10 +197,12 @@ public class Evaluator {
 		double min = Double.NEGATIVE_INFINITY;
 		TestObservation ret = null;
 		for (TestObservation it : testList){
-			double here = classifier.getPosteriorProb(i, it);
-			if (here > min){
-				min = here;
-				ret = it;
+			if(it.getPredictedLabel()==i){
+				double here = classifier.getPosteriorProb(i, it);
+				if (here > min){
+					min = here;
+					ret = it;
+				}
 			}
 		}
 		(ret).displayFeatures();
