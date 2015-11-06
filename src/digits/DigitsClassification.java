@@ -32,7 +32,18 @@ public class DigitsClassification {
 		
 		Evaluator eval = new Evaluator(testObsListLabeled,classifier);
 		
-		// Displaying accuracy
+		// Displaying general accuracy
+		for(int i=1;i<50;i++){
+			Classifier classifier2 = new Classifier(28, 10, 2, trainObsList.size(), i);
+			classifier2.train(trainObsList);
+			ArrayList<TestObservation> testObsListLabeled2 = classifier2.test(testObsList);
+			Evaluator eval2 = new Evaluator(testObsListLabeled2,classifier2);
+			System.out.println("General accuracy for k="+i+" : "+eval2.getGeneralAccuracy());
+		}
+		
+		System.out.println();
+		
+		// Displaying accuracy for every number
 		for(int i=0;i<10;i++){
 			System.out.println("Accuracy for label "+i+" : "+eval.getAccuracy(i));
 		}
