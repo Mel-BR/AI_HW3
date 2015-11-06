@@ -86,7 +86,7 @@ public class Evaluator {
 		return ret;
 	}
 
-	public int[][] getHighestVal(float [][] in, int number){
+	/*public int[][] getHighestVal(float [][] in, int number){
 		int [][] ret = new int[number][2];
 		Comparator<int[]> comparator = new myComparator(in);
 		PriorityQueue<int[]> queue = new PriorityQueue<int[]>(in.length*in[0].length, comparator);
@@ -109,7 +109,7 @@ public class Evaluator {
 		public int compare(int[] a, int[] b){
 			return (int) ((in[a[0]][a[1]] - in[b[0]][b[1]])*1000);
 		}
-	}
+	}*/
 
 
 	/* Returns the pairs with the highest value for the confusion rate
