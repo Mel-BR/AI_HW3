@@ -29,4 +29,14 @@ abstract public class Observation {
 	public void setRealLabel(int realLabel){
 		this.realLabel = realLabel;
 	}
+	
+	public void displayFeatures(){
+		System.out.println();
+		for(int i=0;i<features.length;i++){
+			for(int j=0;j<features[i].length;j++){
+				System.out.print(features[i][j]);
+			}
+			System.out.println();
+		}
+	}
 }
