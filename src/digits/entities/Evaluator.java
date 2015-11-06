@@ -97,6 +97,27 @@ public class Evaluator {
 		}
 	}
 	
+	public int[][] getHighestVal2(int number){
+		int[][] ret = new int[4][2];
+		float[][] confMat = generateConfMatrix(testList);
+		HeapElementComparator comparator = new HeapElementComparator();
+		PriorityQueue<HeapElement> priorityQueue = new PriorityQueue<HeapElement>(number,comparator);
+		for (int i = 0; i<10; i++){
+			for (int j = 0; j<10; j++){
+				if(i!=j){
+					priorityQueue.add(new HeapElement(confMat[i][j], i, j));
+				}
+			}
+		}
+		HeapElement currElem;
+		for (int i =0; i<number; i++){
+			currElem = priorityQueue.remove();
+			ret[i][0]=currElem.getLabel1();
+			ret[i][1]=currElem.getLabel2();;
+		}
+		return ret;
+	}
+	
 	public void displayLikelihoodMap(int label){
 		for (int i = 0; i<28; i++){
 			for (int j = 0; j<28; j++){
