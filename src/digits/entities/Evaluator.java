@@ -178,33 +178,29 @@ public class Evaluator {
 
 	}
 
-	public void displayLowest(){
+	public void displayLowest(int i){
 		double min = Double.POSITIVE_INFINITY;
 		TestObservation ret = null;
-		for (int i = 0; i < 10; i++){
-			for (TestObservation it : testList){
-				double here = classifier.getPosteriorProb(i, it);
-				if (here < min){
-					min = here;
-					ret = it;
-				}
+		for (TestObservation it : testList){
+			double here = classifier.getPosteriorProb(i, it);
+			if (here < min){
+				min = here;
+				ret = it;
 			}
 		}
 		(ret).displayFeatures();
-		}
-	
-	public void displayHighest(){
+	}
+
+	public void displayHighest(int i){
 		double min = Double.NEGATIVE_INFINITY;
 		TestObservation ret = null;
-		for (int i = 0; i < 10; i++){
-			for (TestObservation it : testList){
-				double here = classifier.getPosteriorProb(i, it);
-				if (here > min){
-					min = here;
-					ret = it;
-				}
+		for (TestObservation it : testList){
+			double here = classifier.getPosteriorProb(i, it);
+			if (here > min){
+				min = here;
+				ret = it;
 			}
 		}
 		(ret).displayFeatures();
-		}
+	}
 }
