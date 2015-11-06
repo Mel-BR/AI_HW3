@@ -2,6 +2,10 @@ package digits.entities;
 
 import java.util.Comparator;
 
+
+/*
+ * This class allows us to compare HeapElements in the priority queue
+ */
 public class HeapElementComparator implements Comparator<HeapElement> {
 
 	@Override

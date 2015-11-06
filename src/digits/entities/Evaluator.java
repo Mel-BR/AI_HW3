@@ -97,11 +97,16 @@ public class Evaluator {
 		}
 	}
 	
+	
+	/* Returns the pairs with the highest value for the confusion rate
+	 * rows represent the rank and 1st column represent the first value 
+	 * and second column the second one*/
 	public int[][] getHighestVal2(int number){
 		int[][] ret = new int[4][2];
 		float[][] confMat = generateConfMatrix(testList);
 		HeapElementComparator comparator = new HeapElementComparator();
 		PriorityQueue<HeapElement> priorityQueue = new PriorityQueue<HeapElement>(number,comparator);
+		// Browse the confusion matrix and add each confusion rate with the related pairs to the priority queue
 		for (int i = 0; i<10; i++){
 			for (int j = 0; j<10; j++){
 				if(i!=j){
@@ -109,6 +114,8 @@ public class Evaluator {
 				}
 			}
 		}
+		/* We fill the 2-dim result array with the pairs of highest value
+		 * from the priority queue */
 		HeapElement currElem;
 		for (int i =0; i<number; i++){
 			currElem = priorityQueue.remove();

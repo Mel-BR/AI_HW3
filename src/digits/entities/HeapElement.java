@@ -1,5 +1,11 @@
 package digits.entities;
 
+
+/*
+ * This class allows us to keep track of
+ * the pairs of class that have the highest
+ * confusion rates
+ */
 public class HeapElement {
 	
 	private float confRate;

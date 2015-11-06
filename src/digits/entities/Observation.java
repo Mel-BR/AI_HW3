@@ -30,6 +30,7 @@ abstract public class Observation {
 		this.realLabel = realLabel;
 	}
 	
+	// Browse the feature attribute and display values
 	public void displayFeatures(){
 		System.out.println();
 		for(int i=0;i<features.length;i++){
