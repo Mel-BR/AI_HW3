@@ -1,5 +1,6 @@
 package digits;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import digits.entities.Classifier;
@@ -34,6 +35,32 @@ public class DigitsClassification {
 		// Displaying accuracy
 		for(int i=0;i<10;i++){
 			System.out.println("Accuracy for label "+i+" : "+eval.getAccuracy(i));
+		}
+		
+		System.out.println();
+		
+		//Displaying Confusion Matrix
+		float[][] confMat = eval.generateConfMatrix(testObsListLabeled);
+		DecimalFormat formatter = new DecimalFormat("00.00");
+		for(int i=0;i<10;i++){		
+			for(int j=0;j<10;j++){
+				System.out.printf(formatter.format(confMat[i][j]*100));
+				System.out.print("  ");
+			}
+			System.out.println();
+		}
+		
+		System.out.println();
+		
+		
+		//Displaying Highest Confusion Rate Values
+		System.out.println("Highset Confusion Rate values:");
+		int[][] highestVal = eval.getHighestVal2(4);
+		for(int i=0;i<highestVal.length;i++){		
+			for(int j=0;j<highestVal[i].length;j++){
+				System.out.print(highestVal[i][j]+" ");
+			}
+			System.out.println();
 		}
 		
 		System.out.println();
