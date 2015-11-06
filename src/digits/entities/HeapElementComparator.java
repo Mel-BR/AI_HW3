@@ -8,7 +8,7 @@ import java.util.Comparator;
  */
 public class HeapElementComparator implements Comparator<HeapElement> {
 
-	@Override
+	// @Override
 	public int compare(HeapElement he1, HeapElement he2) {
 		if(he1.getConfRate()<he2.getConfRate())
 			return 1;
