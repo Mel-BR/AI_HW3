@@ -35,7 +35,7 @@ abstract public class Observation {
 		System.out.println();
 		for(int i=0;i<features.length;i++){
 			for(int j=0;j<features[i].length;j++){
-				System.out.print(features[i][j]);
+				System.out.print((features[i][j]==0)? ' ': '+');
 			}
 			System.out.println();
 		}
