@@ -88,4 +88,8 @@ public class Classifier {
 	public int getSize(){
 		return imageSize;
 	}
+	
+	public void setK(int k){
+		this.k=k;
+	}
 }

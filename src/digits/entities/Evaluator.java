@@ -38,6 +38,20 @@ public class Evaluator {
 		}
 		return (float)countCorrectedPredictedLabel/countRealLabel;
 	}
+	
+	public float getGeneralAccuracy(){
+		int countAll= 0; // The number of test observations
+		int countCorrectedPredictedLabel = 0; // The number of test observations that have the same RealLabel and PredictedLabel
+		
+		// We browse the list of test observation */
+		for(TestObservation testObs : testList){
+			countAll++;
+			if(testObs.getRealLabel() == testObs.getPredictedLabel() ){
+				countCorrectedPredictedLabel++;
+			}
+		}
+		return (float)countCorrectedPredictedLabel/countAll;
+	}
 
 	public float[][] generateConfMatrix(ArrayList<TestObservation> obs){
 		float[][] ret = new float [10][10];
