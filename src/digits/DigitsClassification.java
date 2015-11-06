@@ -20,17 +20,7 @@ public class DigitsClassification {
 		ArrayList<TestObservation> testObsList = HelpFuncs.buildTestObs("testimages","testlabels");
 
 		System.out.println("Done");
-		
-		Classifier classifier = new Classifier(28, 10, 2, trainObsList.size(), 1);
-		classifier.train(trainObsList);
-		ArrayList<TestObservation> testObsListLabeled = classifier.test(testObsList);
 
-		/*for(TestObservation testObs : testObsListLabeled){
-			System.out.println(testObs.getRealLabel()+" "+testObs.getPredictedLabel());
-		}*/
-		
-		
-		Evaluator eval = new Evaluator(testObsListLabeled,classifier);
 		
 		// Displaying general accuracy
 		for(int i=1;i<50;i++){
@@ -40,6 +30,15 @@ public class DigitsClassification {
 			Evaluator eval2 = new Evaluator(testObsListLabeled2,classifier2);
 			System.out.println("General accuracy for k="+i+" : "+eval2.getGeneralAccuracy());
 		}
+		
+		System.out.println();
+		
+		// We choose value 1
+		Classifier classifier = new Classifier(28, 10, 2, trainObsList.size(), 1);
+		classifier.train(trainObsList);
+		ArrayList<TestObservation> testObsListLabeled = classifier.test(testObsList);	
+		
+		Evaluator eval = new Evaluator(testObsListLabeled,classifier);
 		
 		System.out.println();
 		
