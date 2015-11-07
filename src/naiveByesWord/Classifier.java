@@ -2,6 +2,8 @@ package naiveByesWord;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,8 +30,8 @@ public class Classifier {
 		double correctness[] = new double[2];
 		correctness = testData(testFilename);
 		
-		System.out.println("Multinomial Naive Bayes correctness:"+correctness[0]);
-		System.out.println("Bernoulli Naive Bayes correctness:"+correctness[1]);
+		System.out.println("\n----\nMultinomial Naive Bayes correctness:"+round(correctness[0],3));
+		System.out.println("Bernoulli Naive Bayes correctness:"+round(correctness[1],3));
 		
 		printTop20probs();
 	}
@@ -37,15 +39,39 @@ public class Classifier {
 	public void printTop20probs(){
 		double[][] topList=getTop20probs();
 		
-		for(int ii = 0; 4>ii;ii++){
-			System.out.println("\n       colum: "+ii);
-			for(int i = 0; 20>i;i++){
-				System.out.println(".."+topList[ii][i]+"..");
-			}
+		System.out.println("\nMultinomial Naive Bayes,Log10, Type: "+types[0]);
+		for(int i = 0; 20>i;i++){
+			System.out.println(".."+round(topList[0][i],3));
 		}
+		
+		System.out.println("\nMultinomial Naive Bayes,Log10, Type: "+types[1]);
+
+		for(int i = 0; 20>i;i++){
+			System.out.println(".."+round(topList[1][i],3));
+		}
+		
+		System.out.println("\nBernoulli Naive Bayes,Log10, Type: "+types[0]);
+
+		for(int i = 0; 20>i;i++){
+			System.out.println(".."+round(topList[2][i],3));
+		}
+		
+		System.out.println("\nBernoulli Naive Bayes,Log10, Type: "+types[1]);
+
+		for(int i = 0; 20>i;i++){
+			System.out.println(".."+round(topList[3][i],3));
+		}
+		
 	}
 	
 	
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
+	}
 	
 	public double[][] getTop20probs(){
 		double[][] topList = new double[4][20];
