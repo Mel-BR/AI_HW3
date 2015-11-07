@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class Classifier {
-	Map<String, Node2> dictionary;
-	LinkedList<Node2> wordList;
+	Map<String, Node> dictionary;
+	LinkedList<Node> wordList;
 
 	
 	float[] prior;
@@ -17,13 +17,13 @@ public class Classifier {
 	
 	public Classifier(String traingFileName, String testFilename, int type1, int type2){
 		
-		dictionary = new HashMap<String, Node2>();
-		wordList = new LinkedList<Node2>();
+		dictionary = new HashMap<String, Node>();
+		wordList = new LinkedList<Node>();
 		prior = new float[2];
 		types = new int[2];
 		types[0] = type1;
 		types[1] = type2;
-		Parser2.readData(types, traingFileName,dictionary,wordList,prior);
+		Parser.readData(types, traingFileName,dictionary,wordList,prior);
 		
 		double correctness[] = new double[2];
 		correctness = testData(testFilename);
@@ -112,7 +112,7 @@ public class Classifier {
 			String aLine;
 			while((aLine = bf.readLine()) != null){
 				LinkedList<Node> wordListTest = new LinkedList<Node>();
-				int typeCorrect = Parser2.fillWordListFromLine(aLine,wordListTest);
+				int typeCorrect = Parser.fillWordListFromLine(aLine,wordListTest);
 				int typeAnswer1 = -9;
 				int typeAnswer2 = -9;
 				if(typeCorrect==this.types[0] || typeCorrect==this.types[1]){

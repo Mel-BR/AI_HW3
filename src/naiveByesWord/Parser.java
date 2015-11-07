@@ -35,7 +35,10 @@ public class Parser {
 		Matcher m = p.matcher(INPUT); // get a matcher object
 //		Map<String, Node> dictionary = new HashMap<String, Node>();
 
-		int type = Character.valueOf(aLine.charAt(0))-48; //Because ASCII
+		int type = (int) aLine.charAt(0)-48;	//because of anscii
+		if(type == -3){		//if minus sign read next character.
+			type = -((int) aLine.charAt(1)-48);
+		}
 				while(m.find()) {
 					String word = m.group(2);
 					if (wordListTest.contains(word)==false){
@@ -53,19 +56,21 @@ public class Parser {
 		
 	
 	
-	static public void readData(int[] types, String fileName, Map<String, Node> dictionaryType1, Map<String, Node> dictionaryType2, LinkedList<Node> wordListType1,LinkedList<Node> wordListType2, float[] prior){
+	static public void readData(int[] types, String fileName, Map<String, Node> dictionary, LinkedList<Node> wordList, float[] prior){
 
 		BufferedReader bf = createBufferedReader(fileName);
+		LinkedList<String> wordListType1 = new LinkedList<String>();
+		LinkedList<String> wordListType2 = new LinkedList<String>();
+
 		
 		String aLine;
 		int[] typeOcc = new int[2];
 		int[] nrOfUniqueOccr = new int[2];
 		int[] totalNumbers = new int[2];
-		int ii=0;
+
 			try {
 				while((aLine = bf.readLine()) != null){
-					ii++;
-					parseInLine(types, aLine, dictionaryType1, dictionaryType2, wordListType1, wordListType2,typeOcc, nrOfUniqueOccr, totalNumbers);
+					parseInLine(types, aLine, dictionary, wordList, wordListType1, wordListType2,typeOcc, nrOfUniqueOccr, totalNumbers);
 				}
 				bf.close();
 			} catch (IOException e) {
@@ -74,45 +79,50 @@ public class Parser {
 			}
 			
 			
-			int nrOfWords = wordListType1.size();
+			int nrOfWords = wordList.size();
 			for(int i = 0; nrOfWords>i;i++){
-				wordListType1.get(i).calcProbs(nrOfUniqueOccr[0], totalNumbers[0]);
-			}
-			nrOfWords = wordListType2.size();
-			for(int i = 0; nrOfWords>i;i++){
-				wordListType2.get(i).calcProbs(nrOfUniqueOccr[1], totalNumbers[1]);
+				wordList.get(i).calcProbs(nrOfUniqueOccr, totalNumbers);
+				wordList.get(i).calcProbs2(typeOcc);
 			}
 			
 			prior[0] = (float) typeOcc[0]/(typeOcc[0]+typeOcc[1]);
 			prior[1] = (float) typeOcc[1]/(typeOcc[0]+typeOcc[1]);
 			
-			
 	}
 	
 	
-	public static void parseInLine(int[] types, String aLine, Map<String, Node> dictionaryType1, Map<String, Node> dictionaryType2, LinkedList<Node> wordListType1,LinkedList<Node> wordListType2,int[] typeOcc, int[] nrOfUniqueOccr, int[]totalNumbers){
+	public static void parseInLine(int[] types, String aLine, Map<String, Node> dictionary, LinkedList<Node> wordList, LinkedList<String> wordListType1,LinkedList<String> wordListType2,int[] typeOcc, int[] nrOfUniqueOccr, int[]totalNumbers){
 		
 		String REGEX = "(\\s)(\\w*)(\\W)(\\d)";
 		Pattern p = Pattern.compile(REGEX);
 		String INPUT = aLine;
 		Matcher m = p.matcher(INPUT); // get a matcher object
-		int type = Character.valueOf(aLine.charAt(0))-48; //Because ASCII
+
+		int type = (int) aLine.charAt(0)-48;	//because of anscii
+		if(type == -3){		//if minus sign read next character.
+			type = -((int) aLine.charAt(1)-48);
+		}
 
 		if (type == types[0]){
 			typeOcc[0]++;
 			//TYPE 1
 			while(m.find()) {
 				String word = m.group(2);
-				if (dictionaryType1.containsKey(word)){
-					dictionaryType1.get(word).occur+= Integer.parseInt(m.group(4));
+				if (wordListType1.contains(word)){
+					dictionary.get(word).occur[0]+= Integer.parseInt(m.group(4));
 					totalNumbers[0]+=Integer.parseInt(m.group(4));
+					dictionary.get(word).occurPerInstance[0]++;
 				}else{
-					Node tempNode = new Node(word);
-					wordListType1.add(tempNode);
-					dictionaryType1.put(word, tempNode);
-					tempNode.occur+= Integer.parseInt(m.group(4));
+					wordListType1.add(word);
+					if(dictionary.containsKey(word)==false){
+						Node tempNode = new Node(word);
+						dictionary.put(word, tempNode);
+						wordList.add(tempNode);
+						tempNode.occur[0]+= Integer.parseInt(m.group(4));
+						tempNode.occurPerInstance[0]++;
+						nrOfUniqueOccr[0]++;
+					}
 					totalNumbers[0]+=Integer.parseInt(m.group(4));
-					nrOfUniqueOccr[0]++;
 				}
 			}
 			
@@ -122,20 +132,26 @@ public class Parser {
 			//TYPE 2
 			while(m.find()) {
 				String word = m.group(2);
-				if (dictionaryType2.containsKey(word)){
-					dictionaryType2.get(word).occur+= Integer.parseInt(m.group(4));
+				if (wordListType2.contains(word)){
+					dictionary.get(word).occur[1]+= Integer.parseInt(m.group(4));
 					totalNumbers[1]+=Integer.parseInt(m.group(4));
+					dictionary.get(word).occurPerInstance[1]++;
 				}else{
-					Node tempNode = new Node(word);
-					wordListType2.add(tempNode);
-					dictionaryType2.put(word, tempNode);
-					tempNode.occur+= Integer.parseInt(m.group(4));
+					wordListType2.add(word);
+					if(dictionary.containsKey(word)==false){
+						Node tempNode = new Node(word);
+						dictionary.put(word, tempNode);
+						wordList.add(tempNode);
+						tempNode.occur[1]+= Integer.parseInt(m.group(4));
+						tempNode.occurPerInstance[1]++;
+						nrOfUniqueOccr[1]++;
+					}
 					totalNumbers[1]+=Integer.parseInt(m.group(4));
-					nrOfUniqueOccr[1]++;
-
 				}
 			}
 			
+		}else{
+			System.out.println("Not expected type in reading txt: "+type);
 		}
 	}
 	
