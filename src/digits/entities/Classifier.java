@@ -10,7 +10,7 @@ public class Classifier {
 	private int imageSize; // size of the image, in our example : 28
 	private int nbOfClass; // total number of class in the problem
 	private int k; // smoothing parameter
-	private int numberOfValues;
+	private int numberOfValues; // number of possible values for each feature
 	
 	/* Constructor */
 	public Classifier(int imageSize, int nbOfClass, int numberOfValues, int totalNumberOfObservations, int k){
