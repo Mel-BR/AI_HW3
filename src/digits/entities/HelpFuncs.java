@@ -11,16 +11,6 @@ import java.util.Scanner;
 
 public class HelpFuncs {
 
-//	public static void main(String arg[]){
-//		ArrayList<TrainObservation> observation = buildTrainObs();
-////		for (int i = 0; i < var.length; i++){
-////			for (int j = 0; j < var[0].length; j++){
-////				System.out.print(var[i][j]);
-////			}
-////			System.out.println();
-////		}
-//	}
-
 	// Build for TrainObservation
 	public static ArrayList<TrainObservation> buildTrainObs(String imageFileName, String labelFileName){
 		ArrayList<TrainObservation> ret = new ArrayList<TrainObservation>();

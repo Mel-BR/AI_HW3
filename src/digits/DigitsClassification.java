@@ -29,7 +29,7 @@ public class DigitsClassification {
 			classifier2.train(trainObsList);
 			ArrayList<TestObservation> testObsListLabeled2 = classifier2.test(testObsList);
 			Evaluator eval2 = new Evaluator(testObsListLabeled2,classifier2);
-			System.out.println("General accuracy for k="+i+" : "+percentFormatter.format(eval2.getGeneralAccuracy()));
+			System.out.println("General accuracy for k="+ i +" : "+percentFormatter.format(eval2.getGeneralAccuracy()));
 		}
 		
 		System.out.println();
@@ -50,7 +50,8 @@ public class DigitsClassification {
 		
 		System.out.println();
 		
-		//Displaying Confusion Matrix
+		// Displaying Confusion Matrix
+		System.out.println("Confusion matrix:");
 		float[][] confMat = eval.generateConfMatrix(testObsListLabeled);
 		DecimalFormat formatter = new DecimalFormat("00.00");
 		for(int i=0;i<10;i++){		
@@ -64,7 +65,7 @@ public class DigitsClassification {
 		System.out.println();
 		
 		
-		//Displaying Highest Confusion Rate Values
+		// Displaying Highest Confusion Rate Values
 		System.out.println("Highset Confusion Rate values:");
 		int[][] highestVal = eval.getHighestVal2(4);
 		for(int i=0;i<highestVal.length;i++){		
@@ -76,15 +77,15 @@ public class DigitsClassification {
 		
 		System.out.println();
 		
-		// Displaying Likelihood maps
-//		for(int i=0;i<10;i++){
-//			System.out.println("Likelihood Map for label "+i+" : ");
-//			eval.displayLikelihoodMap(i);
-//		}		
+		// Displaying Likelihood maps : Test . Uncomment if needed
+		/*for(int i=0;i<10;i++){
+			System.out.println("Likelihood Map for label "+i+" : ");
+			eval.displayLikelihoodMap(i);
+		}*/		
 		
 		System.out.println();
 		
-		// displaying odd ratios maps : Test
+		// Displaying odd ratios maps
 		for (int i = 0; i < highestVal.length; i++){
 			int label1 = highestVal[i][0];
 			int label2 = highestVal[i][1];
@@ -98,7 +99,7 @@ public class DigitsClassification {
 		
 		System.out.println();
 		
-		// displaying highest and lowest posterior probabilities
+		// Displaying highest and lowest posterior probabilities
 		for (int i = 0; i < 10; i++){
 			System.out.println();
 			System.out.print("Highest posterior probability for label " + i + ":");

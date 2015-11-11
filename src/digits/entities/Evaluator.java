@@ -39,6 +39,7 @@ public class Evaluator {
 		return (float)countCorrectedPredictedLabel/countRealLabel;
 	}
 
+	/* Return the general accuracy */
 	public float getGeneralAccuracy(){
 		int countAll= 0; // The number of test observations
 		int countCorrectedPredictedLabel = 0; // The number of test observations that have the same RealLabel and PredictedLabel
@@ -53,6 +54,7 @@ public class Evaluator {
 		return (float)countCorrectedPredictedLabel/countAll;
 	}
 
+	/* Generate and return the confusion matrix */
 	public float[][] generateConfMatrix(ArrayList<TestObservation> obs){
 		float[][] ret = new float [10][10];
 		int[] counter = new int[10];
@@ -68,6 +70,7 @@ public class Evaluator {
 		return ret;
 	}
 
+	/* Calculate and return the odd ratios */
 	public float getOddRatio(int i, int j, int ci, int cii){
 		if (i<0 || i>27 || j<0 || j>27 || ci>9 || cii>9){
 			System.out.println("getOddRatio wrong input");
@@ -75,41 +78,6 @@ public class Evaluator {
 		}
 		return (classifier.getLikelihood(i,j,1,ci)/classifier.getLikelihood(i,j,1,cii));
 	}
-
-	public float[][] getOddRatios(int ci, int cii){
-		float [][] ret = new float[classifier.getSize()][classifier.getSize()];
-		for (int i = 0; i<classifier.getSize(); i++){
-			for (int j = 0; j<classifier.getSize(); j++){
-				ret[i][j] = getOddRatio(i,j,ci,cii);
-			}
-		}
-		return ret;
-	}
-
-	/*public int[][] getHighestVal(float [][] in, int number){
-		int [][] ret = new int[number][2];
-		Comparator<int[]> comparator = new myComparator(in);
-		PriorityQueue<int[]> queue = new PriorityQueue<int[]>(in.length*in[0].length, comparator);
-		for (int i = 0; i<in.length; i++){
-			for (int j = 0; j<in[0].length; j++){
-				queue.add(new int[]{i,j});
-			}
-		}
-		for (int i =0; i<number; i++){
-			ret[i]=queue.remove();
-		}
-		return ret;
-	}
-
-	public class myComparator implements Comparator<int[]>{
-		float [][]in;
-		public myComparator(float[][]in){
-			this.in = in;
-		}
-		public int compare(int[] a, int[] b){
-			return (int) ((in[a[0]][a[1]] - in[b[0]][b[1]])*1000);
-		}
-	}*/
 
 
 	/* Returns the pairs with the highest value for the confusion rate
@@ -139,6 +107,7 @@ public class Evaluator {
 		return ret;
 	}
 
+	/* Display the likelihood map */
 	public void displayLikelihoodMap(int label){
 		for (int i = 0; i<28; i++){
 			for (int j = 0; j<28; j++){
@@ -158,6 +127,7 @@ public class Evaluator {
 
 	}	
 
+	/* Display the odd ratios map */
 	public void displayOddRatiosMap(int label1, int label2){
 		for (int i = 0; i<28; i++){
 			for (int j = 0; j<28; j++){
@@ -178,10 +148,13 @@ public class Evaluator {
 
 	}
 
+	/* Display the features from the observation for a given
+	 * class that has the lowest posterior prob for this class */ 
 	public void displayLowest(int i){
 		double min = Double.POSITIVE_INFINITY;
 		TestObservation ret = null;
 		for (TestObservation it : testList){
+			// We consider only the observations classified in class i
 			if(it.getPredictedLabel()==i){
 				double here = classifier.getPosteriorProb(i, it);
 				if (here < min){
@@ -193,10 +166,13 @@ public class Evaluator {
 		(ret).displayFeatures();
 	}
 
+	/* Display the features from the observation for a given
+	 * class that has the highest posterior prob for this class */ 
 	public void displayHighest(int i){
 		double min = Double.NEGATIVE_INFINITY;
 		TestObservation ret = null;
 		for (TestObservation it : testList){
+			// We consider only the observations classified in class i
 			if(it.getPredictedLabel()==i){
 				double here = classifier.getPosteriorProb(i, it);
 				if (here > min){
