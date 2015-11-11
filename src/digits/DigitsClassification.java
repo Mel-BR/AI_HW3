@@ -21,15 +21,19 @@ public class DigitsClassification {
 
 		System.out.println("Done");
 
+		
+		// Trying to find the best value for the smoothing parameter k 
+		// Create classifier, initialize smoothing parameter to 1
+		Classifier classifierTest = new Classifier(28, 10, 2, trainObsList.size(), 1);
 		DecimalFormat percentFormatter = new DecimalFormat("00.00%");
 		
-		// Displaying general accuracy for different values of k
+		// Training, testing and displaying general accuracy for different values of k
 		for(int i=1;i<50;i++){
-			Classifier classifier2 = new Classifier(28, 10, 2, trainObsList.size(), i);
-			classifier2.train(trainObsList);
-			ArrayList<TestObservation> testObsListLabeled2 = classifier2.test(testObsList);
-			Evaluator eval2 = new Evaluator(testObsListLabeled2,classifier2);
-			System.out.println("General accuracy for k="+ i +" : "+percentFormatter.format(eval2.getGeneralAccuracy()));
+			classifierTest.setK(i);
+			classifierTest.train(trainObsList);
+			ArrayList<TestObservation> testObsListLabeledTest = classifierTest.test(testObsList);
+			Evaluator evalTest = new Evaluator(testObsListLabeledTest,classifierTest);
+			System.out.println("General accuracy for k="+ i +" : "+percentFormatter.format(evalTest.getGeneralAccuracy()));
 		}
 		
 		System.out.println();

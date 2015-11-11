@@ -25,6 +25,8 @@ public class Classifier {
 	
 	/* Train the classifier, takes as input the training observations and compute the different parameters of our model */
 	public void train(ArrayList<TrainObservation> trainList){
+		this.countClass = new int[nbOfClass];
+		this.countPixValueClass = new int[imageSize][imageSize][numberOfValues][nbOfClass];
 		
 		for(TrainObservation trainObs : trainList){
 			int label = trainObs.getRealLabel();
