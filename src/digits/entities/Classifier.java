@@ -87,11 +87,6 @@ public class Classifier {
 		return testList;
 	}
 	
-	/* Getter for the image size */
-	public int getSize(){
-		return imageSize;
-	}
-	
 	/* Setter for the parameter k (smoothing) */
 	public void setK(int k){
 		this.k=k;
