@@ -70,7 +70,7 @@ public class Evaluator {
 		return ret;
 	}
 
-	/* Calculate and return the odd ratios */
+	/* Calculate and returns the odd ratios */
 	public float getOddRatio(int i, int j, int ci, int cii){
 		if (i<0 || i>27 || j<0 || j>27 || ci>9 || cii>9){
 			System.out.println("getOddRatio wrong input");
