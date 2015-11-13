@@ -93,7 +93,7 @@ public class Parser {
 	
 	public static void parseInLine(int[] types, String aLine, Map<String, Node> dictionary, LinkedList<Node> wordList, LinkedList<String> wordListType1,LinkedList<String> wordListType2,int[] typeOcc, int[] nrOfUniqueOccr, int[]totalNumbers){
 		
-		String REGEX = "(\\s)(\\w*)(\\W)(\\d)";
+		String REGEX = "(\\s)(\\S*)(\\W)(\\d)";
 		Pattern p = Pattern.compile(REGEX);
 		String INPUT = aLine;
 		Matcher m = p.matcher(INPUT); // get a matcher object

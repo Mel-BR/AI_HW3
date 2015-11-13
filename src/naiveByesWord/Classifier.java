@@ -1,10 +1,14 @@
 package naiveByesWord;
 
+import java.awt.List;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -16,6 +20,8 @@ public class Classifier {
 	
 	float[] prior;
 	int[] types;
+	double correctness[] = new double[2]; 
+	double confusionMatrix[][][] = new double[2][2][2];
 	
 	public Classifier(String traingFileName, String testFilename, int type1, int type2){
 		
@@ -27,39 +33,56 @@ public class Classifier {
 		types[1] = type2;
 		Parser.readData(types, traingFileName,dictionary,wordList,prior);
 		
-		double correctness[] = new double[2];
-		correctness = testData(testFilename);
 		
-		System.out.println("\n----\nMultinomial Naive Bayes correctness:"+round(correctness[0],3));
-		System.out.println("Bernoulli Naive Bayes correctness:"+round(correctness[1],3));
+		testData(testFilename);
+		
+		System.out.println("\n----\nMultinomial Naive Bayes classification rate: "+round(correctness[0],3));
+		System.out.println("Bernoulli Naive Bayes classification rate: "+round(correctness[1],3));
+		
+		System.out.println("\nConfusion Matrix, Multinomial Naive Bayes:");
+		System.out.println("|"+round(confusionMatrix[0][0][0],3)+"\t" +round(confusionMatrix[0][0][1],3)+"|");
+		System.out.println("|"+round(confusionMatrix[0][1][0],3)+"\t" +round(confusionMatrix[0][1][1],3)+"|");
+		System.out.println(" ");
+		
+		System.out.println("\nConfusion Matrix, Bernoulli Naive Bayes:");
+		System.out.println("|"+round(confusionMatrix[1][0][0],3)+"\t" +round(confusionMatrix[1][0][1],3)+"|");
+		System.out.println("|"+round(confusionMatrix[1][1][0],3)+"\t" +round(confusionMatrix[1][1][1],3)+"|");
+		System.out.println(" ");
+
 		
 		printTop20probs();
 	}
 	
 	public void printTop20probs(){
-		double[][] topList=getTop20probs();
+		Node[][] topList=getTop20probs();
 		
-		System.out.println("\nMultinomial Naive Bayes,Log10, Type: "+types[0]);
+		System.out.println("\nMultinomial Naive Bayes,Log10, Class: "+types[0]);
 		for(int i = 0; 20>i;i++){
-			System.out.println(".."+round(topList[0][i],3));
+			System.out.printf("..%-10s\t%.3f\n",topList[0][i].word,round(topList[0][i].prob[0],3));
+//			System.out.println(".."+topList[0][i].word+"\t\t "+round(topList[0][i].prob[0],3));
 		}
 		
-		System.out.println("\nMultinomial Naive Bayes,Log10, Type: "+types[1]);
+		System.out.println("\nMultinomial Naive Bayes,Log10, Class: "+types[1]);
 
 		for(int i = 0; 20>i;i++){
-			System.out.println(".."+round(topList[1][i],3));
+			System.out.printf("..%-10s\t%.3f\n",topList[1][i].word,round(topList[1][i].prob[1],3));
+
+//			System.out.println(".."+topList[1][i].word+"\t\t "+round(topList[1][i].prob[0],3));
 		}
 		
-		System.out.println("\nBernoulli Naive Bayes,Log10, Type: "+types[0]);
+		System.out.println("\nBernoulli Naive Bayes,Log10, Class: "+types[0]);
 
 		for(int i = 0; 20>i;i++){
-			System.out.println(".."+round(topList[2][i],3));
+			System.out.printf("..%-10s\t%.3f\n",topList[2][i].word,round(topList[2][i].prob2[0],3));
+
+//			System.out.println(".."+topList[2][i].word+"\t\t "+round(topList[2][i].prob[1],3));
 		}
 		
-		System.out.println("\nBernoulli Naive Bayes,Log10, Type: "+types[1]);
+		System.out.println("\nBernoulli Naive Bayes,Log10, Class: "+types[1]);
 
-		for(int i = 0; 20>i;i++){
-			System.out.println(".."+round(topList[3][i],3));
+		for(int i = 0; 20>i;i++){			
+			System.out.printf("..%-10s\t%.3f\n",topList[3][i].word,round(topList[3][i].prob2[1],3));
+//			System.out.println(".."+topList[3][i].word+"\t\t "+round(topList[3][i].prob[1],3));
 		}
 		
 	}
@@ -73,45 +96,120 @@ public class Classifier {
 	    return bd.doubleValue();
 	}
 	
-	public double[][] getTop20probs(){
-		double[][] topList = new double[4][20];
+	public Node[][] getTop20probs(){
+		Node[][] topList = new Node[4][20];
 		
 		//Multinomial Naive Bayes
 		int nrOfWords = wordList.size();
-		double[] tempAllWordsType1 = new double[nrOfWords];
-		double[] tempAllWordsType2 = new double[nrOfWords];
+		ArrayList<Node> tempAllWordsType1 = new ArrayList<Node>();
+		ArrayList<Node> tempAllWordsType2 = new ArrayList<Node>();
 
 		for(int i = 0; nrOfWords>i;i++){
-			tempAllWordsType1[i] = wordList.get(i).prob[0];
-			tempAllWordsType2[i] = wordList.get(i).prob[1];
+			tempAllWordsType1.add(wordList.get(i));
+			tempAllWordsType2.add(wordList.get(i));
 		}
-		Arrays.sort( tempAllWordsType1 );
-		Arrays.sort( tempAllWordsType2 );
 		
-		reverseInPlace(tempAllWordsType1);
-		reverseInPlace(tempAllWordsType2);
+		//Reversed sort
+		Collections.sort(tempAllWordsType1, new Comparator<Node>() {
+	        @Override public int compare(Node p1, Node p2) {
+	        	if (0>(p1.prob[0] - p2.prob[0])){
+	        		return 1;
+	        	}else if (0<(p1.prob[0] - p2.prob[0])){
+	        		return -1;
+	        	}else{
+	            return 0; // Ascending
+	            }
+	        }
+		});
+		Collections.sort(tempAllWordsType2, new Comparator<Node>() {
+	        @Override public int compare(Node p1, Node p2) {
+	        	if (0>(p1.prob[1] - p2.prob[1])){
+	        		return 1;
+	        	}else if (0<(p1.prob[1] - p2.prob[1])){
+	        		return -1;
+	        	}else{
+	            return 0; // Ascending
+	            }
+	        }
+		});
+		
+		for(int i = 0; 20>i;i++){
+			topList[0][i] = tempAllWordsType1.get(i);
+			topList[1][i] = tempAllWordsType2.get(i);
 
-		topList[0] = Arrays.copyOfRange(tempAllWordsType1, 0, 20);
-		topList[1] = Arrays.copyOfRange(tempAllWordsType2, 0, 20);
+		}
 		
+		
+//		Arrays.sort( tempAllWordsType1 );
+//		Arrays.sort( tempAllWordsType2 );
+		
+//		reverseInPlace(tempAllWordsType1);
+//		reverseInPlace(tempAllWordsType2);
+
+//		topList[0] = Arrays.copyOfRange(tempAllWordsType1, 0, 20);
+//		topList[1] = Arrays.copyOfRange(tempAllWordsType2, 0, 20);
+		
+
 
 		//Bernoulli Naive Bayes
-		double[] tempAllWordsType3 = new double[nrOfWords];
-		double[] tempAllWordsType4 = new double[nrOfWords];
+		ArrayList<Node> tempAllWordsType3 = new ArrayList<Node>();
+		ArrayList<Node> tempAllWordsType4 = new ArrayList<Node>();
 
 		for(int i = 0; nrOfWords>i;i++){
-			tempAllWordsType3[i] = wordList.get(i).prob2[0];
-			tempAllWordsType4[i] = wordList.get(i).prob2[1];
+			tempAllWordsType3.add(wordList.get(i));
+			tempAllWordsType4.add(wordList.get(i));
 		}
-		Arrays.sort( tempAllWordsType3 );
-		Arrays.sort( tempAllWordsType4 );
 		
-		reverseInPlace(tempAllWordsType3);
-		reverseInPlace(tempAllWordsType4);
+		//Reversed sort
+		Collections.sort(tempAllWordsType3, new Comparator<Node>() {
+	        @Override public int compare(Node p1, Node p2) {
+	        	if (0>(p1.prob2[0] - p2.prob2[0])){
+	        		return 1;
+	        	}else if (0<(p1.prob2[0] - p2.prob2[0])){
+	        		return -1;
+	        	}else{
+	            return 0; // Ascending
+	            }
+	        }
+		});
 		
-		topList[2] = Arrays.copyOfRange(tempAllWordsType3, 0, 20);
-		topList[3] = Arrays.copyOfRange(tempAllWordsType4, 0, 20);
+		Collections.sort(tempAllWordsType4, new Comparator<Node>() {
+	        @Override public int compare(Node p1, Node p2) {
+	        	if (0>(p1.prob2[1] - p2.prob2[1])){
+	        		return 1;
+	        	}else if (0<(p1.prob2[1] - p2.prob2[1])){
+	        		return -1;
+	        	}else{
+	            return 0; // Ascending
+	            }
+	        }
+		});
 		
+		for(int i = 0; 20>i;i++){
+			topList[2][i] = tempAllWordsType3.get(i);
+			topList[3][i] = tempAllWordsType4.get(i);
+
+		}
+		
+		
+		
+//		
+//		double[] tempAllWordsType3 = new double[nrOfWords];
+//		double[] tempAllWordsType4 = new double[nrOfWords];
+//
+//		for(int i = 0; nrOfWords>i;i++){
+//			tempAllWordsType3[i] = wordList.get(i).prob2[0];
+//			tempAllWordsType4[i] = wordList.get(i).prob2[1];
+//		}
+//		Arrays.sort( tempAllWordsType3 );
+//		Arrays.sort( tempAllWordsType4 );
+//		
+//		reverseInPlace(tempAllWordsType3);
+//		reverseInPlace(tempAllWordsType4);
+//		
+//		topList[2] = Arrays.copyOfRange(tempAllWordsType3, 0, 20);
+//		topList[3] = Arrays.copyOfRange(tempAllWordsType4, 0, 20);
+//		
 		return topList;
 	}
 	
@@ -126,17 +224,27 @@ public class Classifier {
 	    }
 	}
 	
-	public double[] testData(String filename){
+	
+	
+	public void testData(String filename){
 		BufferedReader bf = Parser.createBufferedReader(filename);
-		int rightAnswers1 = 0;
-		int wrongAnswers1 = 0;
+		int rightAnswers1Type1 = 0;
+		int wrongAnswers1Type1 = 0;
 		
-		int rightAnswers2 = 0;
-		int wrongAnswers2 = 0;
+		int rightAnswers1Type2 = 0;
+		int wrongAnswers1Type2 = 0;
+		
+		int rightAnswers2Type1 = 0;
+		int wrongAnswers2Type1 = 0;
+		
+		int rightAnswers2Type2 = 0;
+		int wrongAnswers2Type2 = 0;
 		
 		try {
 			String aLine;
+			int iii = 0;
 			while((aLine = bf.readLine()) != null){
+				iii ++;
 				LinkedList<Node> wordListTest = new LinkedList<Node>();
 				int typeCorrect = Parser.fillWordListFromLine(aLine,wordListTest);
 				int typeAnswer1 = -9;
@@ -168,15 +276,33 @@ public class Classifier {
 						typeAnswer2 = this.types[1];
 					}
 					
-					if(typeAnswer1==typeCorrect){
-						rightAnswers1++;
-					}else{
-						wrongAnswers1++;
-					}
-					if(typeAnswer2==typeCorrect){
-						rightAnswers2++;
-					}else{
-						wrongAnswers2++;
+					if(typeCorrect == this.types[0]){
+						if(typeAnswer1==typeCorrect){
+							rightAnswers1Type1++;
+						}else{
+							wrongAnswers1Type1++;
+//							System.out.println("wrongAnswers1Type1++line="+iii);
+
+						}
+						if(typeAnswer2==typeCorrect){
+							rightAnswers2Type1++;
+						}else{
+							wrongAnswers2Type1++;
+						}
+					}else if(typeCorrect == this.types[1]){
+						
+						if(typeAnswer1==typeCorrect){
+							rightAnswers1Type2++;
+						}else{
+							wrongAnswers1Type2++;
+						}
+						if(typeAnswer2==typeCorrect){
+							rightAnswers2Type2++;
+						}else{
+							wrongAnswers2Type2++;
+						}
+						
+						
 					}
 					
 				}else{
@@ -189,11 +315,25 @@ public class Classifier {
 			e.printStackTrace();
 		}
 		
-		double correctness[] = new double[2];
-		correctness[0] = (double) rightAnswers1/(rightAnswers1+wrongAnswers1);
-		correctness[1] = (double) rightAnswers2/(rightAnswers2+wrongAnswers2);
+		
+		correctness[0] = (double) (rightAnswers1Type1+rightAnswers1Type2)/(rightAnswers1Type1+rightAnswers1Type2+wrongAnswers1Type1+wrongAnswers1Type2);
+		correctness[1] = (double) (rightAnswers2Type1+rightAnswers2Type2)/(rightAnswers2Type1+rightAnswers2Type2+wrongAnswers2Type1+wrongAnswers2Type2);
+		//=====
+		confusionMatrix[0][0][0] = (double) (rightAnswers1Type1)/(rightAnswers1Type1+wrongAnswers1Type1);
+		confusionMatrix[0][0][1] = (double) 1-confusionMatrix[0][0][0];
+		
+		confusionMatrix[0][1][1] = (double) (rightAnswers1Type2)/(rightAnswers1Type2+wrongAnswers1Type2);
+		confusionMatrix[0][1][0] = (double) 1-confusionMatrix[0][1][1];
+		//=====
+		confusionMatrix[1][0][0] = (double) (rightAnswers2Type1)/(rightAnswers2Type1+wrongAnswers2Type1);
+		confusionMatrix[1][0][1] = (double) 1-confusionMatrix[1][0][0];
+		
+		confusionMatrix[1][1][1] = (double) (rightAnswers2Type2)/(rightAnswers2Type2+wrongAnswers2Type2);
+		confusionMatrix[1][1][0] = (double) 1-confusionMatrix[1][1][1];
+		
+		//System.out.println("====rightAnswers2Type1====="+rightAnswers2Type1);
+//		System.out.println("===wrongAnswers2Type1====="+wrongAnswers2Type1);
 
-		return correctness;
 	}
 
 }
